@@ -26,7 +26,7 @@ class NewsVM @Inject constructor(private val newsRepo: NewsRepo) : ViewModel() {
         _newsTopHeadLineByCountry
 
     init {
-        getNewsTopHeadlinesByCountry("IN")
+        getNewsTopHeadlinesByCountry("us")
     }
 
     fun getNewsTopHeadlinesByCountry(country: String) {

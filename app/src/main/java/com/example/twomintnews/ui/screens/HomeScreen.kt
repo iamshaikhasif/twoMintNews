@@ -2,6 +2,9 @@ package com.example.twomintnews.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -10,7 +13,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.twomintnews.ui.viewModel.NewsVM
 import com.example.twomintnews.utilities.ResourceState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.toLowerCase
+import androidx.compose.ui.unit.dp
 import com.example.twomintnews.ui.components.Loader
+import com.example.twomintnews.ui.screens.news.NewsCardComponent
+import com.example.twomintnews.ui.screens.news.NewsList
+import java.util.Locale
 
 
 @Composable
@@ -20,23 +28,37 @@ fun HomeScreen(
 
     val topNews by newsVM.newsTopHeadLineByCountry.collectAsState()
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f
+    ) {
+        100
+    }
+
+    VerticalPager(state = pagerState,
+        modifier = Modifier.fillMaxSize(),
+        pageSize = PageSize.Fill,
+        pageSpacing = 8.dp,
+        ) { page ->
+
         when (topNews){
             is ResourceState.Loading -> {
                 Log.d("screen", "Inside_Loading")
                 Loader()
             }
             is ResourceState.Success -> {
-                Log.d("screen", "Inside_Success")
+                val res = (topNews as ResourceState.Success).data
+                Log.d("screen", "Inside_Success ${res.status} ${res.totalResults}")
+
+                if(res.status.lowercase() == "ok" && res.totalResults > 0)
+                    NewsCardComponent(page = page, article = res.articles[page])
             }
             is ResourceState.Error -> {
                 Log.d("screen", "Inside_Error")
             }
-            else -> {
-                Loader()
-            }
         }
-    }
 
+    }
 
 }
