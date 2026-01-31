@@ -25,15 +25,32 @@ class NewsVM @Inject constructor(private val newsRepo: NewsRepo) : ViewModel() {
     val newsTopHeadLineByCountry: StateFlow<ResourceState<NewsResponseModel>> =
         _newsTopHeadLineByCountry
 
-    init {
-        getNewsTopHeadlinesByCountry("us")
-    }
+    private val _newsTopHeadLineByCategory: MutableStateFlow<ResourceState<NewsResponseModel>> =
+        MutableStateFlow(
+            ResourceState.Loading()
+        )
+
+    val newsTopHeadLineByCategory: StateFlow<ResourceState<NewsResponseModel>> =
+        _newsTopHeadLineByCategory
+
+//    init {
+//        getNewsTopHeadlinesByCountry("us")
+//    }
 
     fun getNewsTopHeadlinesByCountry(country: String) {
         viewModelScope.launch(Dispatchers.IO) {
             newsRepo.getNewsTopHeadlinesByCountry(country = country)
                 .collectLatest { res ->
                     _newsTopHeadLineByCountry.value = res
+                }
+        }
+    }
+
+    fun getNewsTopHeadlinesByCategory(category: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            newsRepo.getNewsTopHeadlinesByCategory(category = category)
+                .collectLatest { res ->
+                    _newsTopHeadLineByCategory.value = res
                 }
         }
     }

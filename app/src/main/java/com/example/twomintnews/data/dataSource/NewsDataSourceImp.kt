@@ -10,4 +10,8 @@ class NewsDataSourceImp @Inject constructor(private val apiService: ApiService):
     override suspend fun getNewsTopHeadlinesByCountry(country: String): Response<NewsResponseModel> {
         return apiService.getNewsTopHeadlinesByCountry(country = country)
     }
+
+    override suspend fun getNewsTopHeadlinesByCategory(category: String): Response<NewsResponseModel> {
+        return apiService.getNewsTopHeadlinesByCategory(category = category)
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.twomintnews.data.api
 
+import com.example.twomintnews.data.dataSource.Constants
 import com.example.twomintnews.data.entity.NewsResponseModel
 import retrofit2.Response
 import retrofit2.http.GET
@@ -10,6 +11,13 @@ interface ApiService {
     @GET(ApiRoutes.TOP_HEADLINES)
     suspend fun getNewsTopHeadlinesByCountry(
         @Query("country") country: String,
+        @Query("apiKey") apiKey: String = ApiRoutes.API_KEY,
+    ): Response<NewsResponseModel>
+
+    @GET(ApiRoutes.TOP_HEADLINES)
+    suspend fun getNewsTopHeadlinesByCategory(
+        @Query("country") country: String = Constants.COUNTRY,
+        @Query("country") category: String,
         @Query("apiKey") apiKey: String = ApiRoutes.API_KEY,
     ): Response<NewsResponseModel>
 

@@ -23,4 +23,18 @@ class NewsRepo @Inject constructor(private val newsDataSource: NewsDataSource) {
 
         }.catch { e -> emit(ResourceState.Error(error = e.localizedMessage ?: "Something Went Wrong")) }
     }
+
+    suspend fun getNewsTopHeadlinesByCategory(category: String) : Flow<ResourceState<NewsResponseModel>> {
+        return flow {
+            emit(ResourceState.Loading())
+
+            val res = newsDataSource.getNewsTopHeadlinesByCategory(category = category)
+
+            if(res.isSuccessful && res.body() != null)
+                emit(ResourceState.Success(data = res.body()!!))
+            else
+                emit(ResourceState.Error(error = "Api failed"))
+
+        }.catch { e -> emit(ResourceState.Error(error = e.localizedMessage ?: "Something Went Wrong")) }
+    }
 }
